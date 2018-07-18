@@ -1,30 +1,24 @@
 const express = require('express');
 const { Client } = require('pg');
+const userModel = require('../models/user');
+const bcrypt = require('bcrypt');
 
 const router = express();
 
+router.post('/signup', (req, res, next) => {
+    const saltRounds = 10;
+    const user = new userModel({
+        email: req.body.email,
+
+        password: bcrypt.genSalt(saltRounds, function (err, salt) {
+            bcrypt.hash(req.body.password, saltRounds, function (err, hash) {
+
+            });
+        }),
+    });
+});
 router.get('/', (req, res, next) => {
-    const client = new Client();
-    client.connect()
-        .then(() => {
-            console.log("connected to posgres!");
-            return client.query("select * from users");
-        })
-        .then(result => {
-            client.end();
-            if (result.rowCount > 0) {
-                res.status(200).json({
-                    count: result.rowCount,
-                    data: result.rows
-                })
-            }
-        })
-        .catch((err) => {
-            client.end();
-            res.status(500).json({
-                error: err
-            })
-        });
+
 });
 
 module.exports = router;
