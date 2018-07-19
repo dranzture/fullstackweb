@@ -1,0 +1,10 @@
+{
+    "env": {
+        "PORT": 3000,
+        "PGHOST": "localhost",
+        "PGUSER": "postgres",
+        "PGDATABASE": "DMI_Test",
+        "PGPASSWORD": "admin",
+        "PGPORT": 5432
+    }
+}
