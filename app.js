@@ -7,7 +7,6 @@ const bodyParser = require("body-parser");
 
 //route dependencies
 const userRoute = require('./api/routes/user');
-const loginRoute = require('./api/routes/login');
 //nodes initiate
 app.use(morgan("dev"));
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -29,7 +28,6 @@ app.use((req, res, next) => {
 
 //create routes
 app.use('/user', userRoute);
-app.use('/login', loginRoute);
 
 app.use('/', (req, res, next) => {
     res.status(200).json({

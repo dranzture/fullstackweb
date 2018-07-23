@@ -9,9 +9,6 @@ const bcrypt = require('bcrypt');
 
 router.post('/signup', (req, res, next) => {
     const saltRounds = 10;
-    console.log(req.body.email);
-    console.log(req.body.password);
-
     const user = new userModel({
         email: req.body.email,
         password: bcrypt.genSalt(saltRounds, function (err, salt) {
@@ -63,14 +60,30 @@ router.post('/signup', (req, res, next) => {
         }),
     });
 });
-router.get('/', (req, res, next) => {
-    return res.status(200).json({
-        message: 'hey there',
-    })
+
+router.get('/login', (req, res, next) => {
+    const client = new Client();
+    client.connect()
+        .then(() => {
+            console.log("connected to posgres!");
+            return client.query("select * from users");
+        })
+        .then(result => {
+            client.end();
+            if (result.rowCount > 0) {
+                console.log(result);
+                res.status(200).json({
+                    count: result.rowCount,
+                    data: result.rows
+                })
+            }
+        })
+        .catch((err) => {
+            client.end();
+            res.status(500).json({
+                error: err
+            })
+        });
 });
-router.post('/', (req, res, next) => {
-    return res.status(404).json({
-        message: 'No directory found!',
-    })
-});
+
 module.exports = router;
