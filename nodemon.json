@@ -5,6 +5,7 @@
         "PGUSER": "postgres",
         "PGDATABASE": "DMI_Test",
         "PGPASSWORD": "admin",
-        "PGPORT": 5432
+        "PGPORT": 5432,
+        "JWT_KEY": "801Nmain"
     }
 }

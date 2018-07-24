@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
-
+const jwt = require('jsonwebtoken');
 const { Client } = require('pg');
 const userModel = require('../models/user');
 const bcrypt = require('bcrypt');
-
+const checkAuth = require('../middleware/checkAuth');
 
 
 router.post('/signup', (req, res, next) => {
@@ -54,6 +54,11 @@ router.post('/signup', (req, res, next) => {
                                     }
                                 }
                             });
+                        }).catch((err) => {
+                            client.end();
+                            res.status(500).json({
+                                error: err
+                            })
                         });
                 }
             })
@@ -61,22 +66,56 @@ router.post('/signup', (req, res, next) => {
     });
 });
 
-router.get('/login', (req, res, next) => {
+router.post('/login', (req, res, next) => {
     const client = new Client();
     client.connect()
         .then(() => {
-            console.log("connected to posgres!");
-            return client.query("select * from users");
-        })
-        .then(result => {
-            client.end();
-            if (result.rowCount > 0) {
-                console.log(result);
-                res.status(200).json({
-                    count: result.rowCount,
-                    data: result.rows
-                })
-            }
+            const retrieve_User = "Select id, password from Login_Users where email=$1";
+            client.query(retrieve_User, [req.body.email], (err, result) => {
+                if (err) {
+                    console.log(err);
+                }
+                else {
+                    if (result.rowCount === 0) {
+                        console.log(req.body.email);
+                        return res.status(401).json({
+                            message: "Auth failed"
+                        });
+                    }
+                    else {
+                        bcrypt.compare(req.body.password, result.rows[0].password, (err, hash_results) => {
+                            if (err) {
+                                console.log(err);
+                            }
+                            else {
+                                if (hash_results === true) {
+                                    const token = jwt.sign({
+                                        email: req.body.email,
+                                        userId: result.rows[0].id
+                                    }
+                                        , process.env.JWT_KEY,
+                                        {
+                                            expiresIn: "1h"
+                                        });
+                                    console.log(hash_results);
+                                    return res.status(200).json({
+                                        message: "Authenticated!",
+                                        token: token
+                                    })
+                                }
+                                else {
+                                    console.log(hash_results);
+
+                                    return res.status(404).json({
+                                        message: "Auth failed"
+                                    })
+                                }
+
+                            }
+                        })
+                    }
+                }
+            });
         })
         .catch((err) => {
             client.end();
