@@ -31,7 +31,7 @@ app.use('/user', userRoute);
 
 app.use('/', (req, res, next) => {
     res.status(200).json({
-        message: 'Test works',
+        message: 'Main Page',
     })
 });
 

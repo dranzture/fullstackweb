@@ -6,6 +6,20 @@ const userModel = require('../models/user');
 const bcrypt = require('bcrypt');
 const checkAuth = require('../middleware/checkAuth');
 
+router.get('/', checkAuth, (req, res, next)=>{
+    console.log(req.header('Authorization'));
+    const client = new Client();
+    client.connect()
+        .then(() => {
+            const retrieve_User = "Select * from Users";
+            client.query(retrieve_User,(err,result)=>{
+                return res.status(200).json({
+                    count: result.rowCount,
+                    data: result.rows               
+                })
+            });
+        });
+});
 
 router.post('/signup', (req, res, next) => {
     const saltRounds = 10;
