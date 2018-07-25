@@ -14,29 +14,42 @@ export default {
     };
   },
   methods: {
-    getUsers() {}
-  },
-  created() {
-    this.$http
-      .get("https://localhost:3000/user")
-      .then(rows => {
-        if (rows.data.count > 0) {
-          for (let i = 0; i < rows.data.count; i++) {
+    getUsers() {
+      console.log("Users");
+      console.log(process.env.JWT);
+      this.$http
+      .get("https://localhost:3000/user", {
+        headers: {'Authorization': "Bearer " + process.env.JWT}
+      })
+      .then(result => {               
+        if (result.data.count > 0) {
+          for (let i = 0; i < result.data.count; i++) {
             const user = {
               meta: "user_class",
-              id: rows.data.data[i].id,
-              email: rows.data.data[i].email,
-              passcode: rows.data.data[i].passcode,
-              firstname: rows.data.data[i].firstname,
-              lastname: rows.data.data[i].lastname
+              id: result.data.data[i].id,
+              email: result.data.data[i].email,
+              passcode: result.data.data[i].passcode,
+              firstname: result.data.data[i].firstname,
+              lastname: result.data.data[i].lastname
             };
             this.users.push(user);
+            console.log(user);
           }
+        }
+        else{
+          console.log('did not connect to db')
         }
       })
       .catch(err => {
         console.log(err);
+        if(err.status===401){
+          this.$router.push({path:'/'});
+        }
       });
+    }
+  },
+  created() {
+    this.getUsers()
   }
 };
 </script>

@@ -37,7 +37,6 @@
             </v-layout>
         </v-container> 
     </v-content>
-
   </div>
 </template>
 
@@ -52,7 +51,6 @@ export default {
       auth: '',
       email: '',
       password: '',
-      token: ''
     };
   },
   methods: {
@@ -74,8 +72,10 @@ export default {
         })
         .then(result => {
           if (result.data.token != null) {
-            this.token = result.data.token;
-            console.log(this.token);
+            process.env.JWT = result.data.token
+            console.log("Env:" + process.env.JWT);
+
+            this.$router.push({path:'users'})
           } else {
             this.auth = true;
           }
