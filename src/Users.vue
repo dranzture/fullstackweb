@@ -18,7 +18,7 @@ export default {
   },
   created() {
     this.$http
-      .get("http://localhost:3000/user")
+      .get("https://localhost:3000/user")
       .then(rows => {
         if (rows.data.count > 0) {
           for (let i = 0; i < rows.data.count; i++) {

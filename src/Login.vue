@@ -1,7 +1,5 @@
 <template>
-
   <div>
-
     <v-content>       
         <v-container fluid fill-height>    
             <v-layout  align-center justify-center>               
@@ -29,14 +27,14 @@
                         </v-card-text>
                         <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn @click="getEmailAndPassword" class="white--text" color="red darken-2">Login</v-btn>
+                        <v-btn @click="submitClick" class="white--text" color="red darken-2">Login</v-btn>
                         </v-card-actions>
                     </v-card>
                 </v-flex>
             </v-layout>
         </v-container> 
     </v-content>
-    
+
   </div>
 </template>
 
@@ -44,13 +42,34 @@
 export default {
   data() {
     return {
+      auth: "",
       email: "",
-      password: ""
+      password: "",
+      token: ""
     };
   },
   methods: {
     getEmailAndPassword() {
       console.log(this.email + " " + this.password);
+    },
+    submitClick() {
+      console.log(this.email + " " + this.password);
+      if (this.email === "" || this.password === "") {
+        this.auth = true;
+      }
+      this.$http
+        .post("https://localhost:3000/user/login", {
+          email: this.email,
+          password: this.password
+        })
+        .then(result => {
+          if (result.data.token != null) {
+            this.token = result.data.token;
+            console.log(this.token);
+          } else {
+            this.auth = true;
+          }
+        });
     }
   }
 };
