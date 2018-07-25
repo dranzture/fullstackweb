@@ -1,24 +1,25 @@
 <template>
     <div>
-        <v-alert
-        v-model="auth"
-        transition="scale-transition"
-        color="error"
-        >
-        Authentication Failed
-        </v-alert>
+        <v-app>
+            <v-alert 
+            :value="authentication"
+            transition="scale-transition"
+            color="red"
+            >
+            Authentication Failed
+            </v-alert>
+        </v-app>
     </div>
 </template>
 
 <script>
 export default {
-    data(){
-        return {
-            auth: false
-        }
-    }
+  props: ['authentication']
 };
 </script>
 
-<style>
+<style >
+div {
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+}
 </style>

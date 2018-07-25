@@ -15,6 +15,7 @@
                                     label="Email"
                                     placeholder="Email"
                                     color="red darken-2"
+                                    @input="reset"
                                 ></v-text-field>
                                 <v-text-field
                                     v-model="password"
@@ -22,6 +23,7 @@
                                     color="red darken-2"
                                     placeholder="Password"
                                     type="password"
+                                    @input="reset"
                                 ></v-text-field>
                             </v-form>
                         </v-card-text>
@@ -30,6 +32,7 @@
                         <v-btn @click="submitClick" class="white--text" color="red darken-2">Login</v-btn>
                         </v-card-actions>
                     </v-card>
+                    <app-alert :authentication="auth"></app-alert>
                 </v-flex>
             </v-layout>
         </v-container> 
@@ -39,16 +42,23 @@
 </template>
 
 <script>
+import Alert from "./AlertComponent.vue";
 export default {
+  components: {
+    "app-alert": Alert
+  },
   data() {
     return {
-      auth: "",
-      email: "",
-      password: "",
-      token: ""
+      auth: '',
+      email: '',
+      password: '',
+      token: ''
     };
   },
   methods: {
+    reset(){
+        this.auth = false;
+    },
     getEmailAndPassword() {
       console.log(this.email + " " + this.password);
     },
